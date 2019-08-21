@@ -1,0 +1,25 @@
+{
+  "name": "opappo-cli",
+  "version": "1.0.0",
+  "description": "opappo cli tools",
+  "main": "index.js",
+  "bin": {
+    "opappo": "./bin/app.js --debug"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Amethyst-564",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Amethyst-564/opappo-cli"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "commander": "^2.20.0",
+    "inquirer": "^6.5.0",
+    "lodash": "^4.17.15",
+    "xlsx": "^0.15.1"
+  }
+}
