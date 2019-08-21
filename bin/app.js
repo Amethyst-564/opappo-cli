@@ -10,11 +10,10 @@ const parse = require('../lib/parse.js');
 
 const fileList = [];
 
-program
-    .version('0.1.0');
+program.version('0.1.0');
 
-program.on('--help', function () {
-    console.log('\nExamples: \n$ opappo dc <filename>\n$ opappo d  <filename>');
+program.on('--help', () => {
+    console.log('\nExamples: \n$ opappo dc <fileName>\n$ opappo d  <fileName>');
 });
 
 program
@@ -25,22 +24,17 @@ program
     .action((fileName, options) => {
         const promps = [];
         if (options.select) {
-            // TODO set choices list
-            fileDisplay(process.cwd());
+            dirWalk(process.cwd());
 
-            setTimeout(() => {
-                promps.push({
-                    type: 'list',
-                    name: 'fileName',
-                    message: chalk.hex('#cddc39')('Select a file'),
-                    choices: fileList
-                });
-                inquirer.prompt(promps).then(function (answers) {
-                    parse.parseDc(answers.fileName);
-                });
-            }, 500);
-
-
+            promps.push({
+                type: 'list',
+                name: 'fileName',
+                message: chalk.hex('#c0ca33')('Select a file'),
+                choices: fileList
+            });
+            inquirer.prompt(promps).then(function (answers) {
+                parse.parseDc(answers.fileName);
+            });
         } else {
             parse.parseDc(fileName);
         }
@@ -54,33 +48,24 @@ program
         parse.parseFeedback(fileName);
     });
 
-
 program.parse(process.argv);
 
-function fileDisplay(filePath) {
-    fs.readdir(filePath, function (err, files) {
-        if (err) {
-            console.warn(err)
-        } else {
-            files.forEach(function (filename) {
-                var filedir = path.join(filePath, filename);
-
-                fs.stat(filedir, function (eror, stats) {
-                    if (eror) {
-                        console.warn('获取文件stats失败');
-                    } else {
-                        if (stats.isFile()) {
-                            fileList.push({
-                                name: filename,
-                                value: filename
-                            });
-                        }
-                        if (stats.isDirectory()) {
-                            fileDisplay(filedir);
-                        }
-                    }
-                })
-            });
+function dirWalk(dirPath) {
+    const files = fs.readdirSync(dirPath);
+    files.forEach((fileName) => {
+        const filePath = path.join(dirPath, fileName);
+        const stats = fs.statSync(filePath);
+        if (stats.isFile()) {
+            const ext = _.last(fileName.split('.'));
+            if (ext === 'xlsx' || ext === 'xls') {
+                fileList.push({
+                    name: chalk.hex('#f44336')(fileName),
+                    value: fileName
+                });
+            }
+        }
+        if (stats.isDirectory()) {
+            dirWalk(filePath);
         }
     });
 }
