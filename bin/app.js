@@ -1,71 +1,57 @@
 #! /usr/bin/env node
-
 const program = require('commander');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-const _ = require('lodash');
-const fs = require('fs');
-const path = require('path');
-const parse = require('../lib/parse.js');
 
-const fileList = [];
+const Parse = require('../lib/parse');
 
-program.version('0.1.0');
+class App {
+    constructor() {
+        this.fileList = [];
+        this.parse = new Parse();
+        this.initFunc();
+    }
 
-program.on('--help', () => {
-    console.log('\nExamples: \n$ opappo dc <fileName>\n$ opappo d  <fileName>');
-});
+    initFunc() {
+        program.version('0.1.0');
 
-program
-    .command('dc [fileName]')
-    .alias('d')
-    .description('parse a DC file')
-    .option('-s, --select', 'Select a file')
-    .action((fileName, options) => {
-        const promps = [];
-        if (options.select) {
-            dirWalk(process.cwd());
+        program.on('--help', () => {
+            console.log('\nExamples: \n$ opappo dc <fileName>\n$ opappo d  <fileName>');
+        });
 
-            promps.push({
-                type: 'list',
-                name: 'fileName',
-                message: chalk.hex('#c0ca33')('Select a file'),
-                choices: fileList
+        program
+            .command('dc [fileName]')
+            .alias('d')
+            .description('parse a DC file')
+            .option('-s, --select', 'Select a file')
+            .action((fileName, options) => {
+                const promps = [];
+                if (options.select) {
+                    promps.push({
+                        type: 'list',
+                        name: 'filePath',
+                        message: chalk.hex('#c0ca33')('Select a file'),
+                        choices: this.parse.dirWalk(process.cwd())
+                    });
+                    inquirer.prompt(promps).then(answers => {
+                        this.parse.getPath(answers.filePath, 'dc', true);
+                    });
+                } else {
+                    this.parse.getPath(fileName, 'dc', false);
+                }
             });
-            inquirer.prompt(promps).then(function (answers) {
-                parse.parseDc(answers.fileName);
+
+        program
+            .command('feedback [fileName]')
+            .alias('f')
+            .description('parse a FeedBack file')
+            .action((fileName) => {
+                this.parse.parseFeedback(fileName);
             });
-        } else {
-            parse.parseDc(fileName);
-        }
-    });
 
-program
-    .command('feedback [fileName]')
-    .alias('f')
-    .description('parse a FeedBack file')
-    .action((fileName) => {
-        parse.parseFeedback(fileName);
-    });
+        program.parse(process.argv);
+    }
 
-program.parse(process.argv);
-
-function dirWalk(dirPath) {
-    const files = fs.readdirSync(dirPath);
-    files.forEach((fileName) => {
-        const filePath = path.join(dirPath, fileName);
-        const stats = fs.statSync(filePath);
-        if (stats.isFile()) {
-            const ext = _.last(fileName.split('.'));
-            if (ext === 'xlsx' || ext === 'xls') {
-                fileList.push({
-                    name: chalk.hex('#f44336')(fileName),
-                    value: fileName
-                });
-            }
-        }
-        if (stats.isDirectory()) {
-            dirWalk(filePath);
-        }
-    });
 }
+
+new App();
