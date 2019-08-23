@@ -25,8 +25,8 @@ class App {
             .description('parse a DC file')
             .option('-s, --select', 'Select a file')
             .action((fileName, options) => {
-                const promps = [];
                 if (options.select) {
+                    const promps = [];
                     promps.push({
                         type: 'list',
                         name: 'filePath',
@@ -37,16 +37,32 @@ class App {
                         this.parse.getPath(answers.filePath, 'dc', true);
                     });
                 } else {
-                    this.parse.getPath(fileName, 'dc', false);
+                    if (this.parse.isExcel(fileName)) {
+                        this.parse.getPath(fileName, 'dc', false);
+                    }
                 }
             });
 
         program
             .command('feedback [fileName]')
             .alias('f')
-            .description('parse a FeedBack file')
-            .action((fileName) => {
-                this.parse.parseFeedback(fileName);
+            .description('parse a Feedback file')
+            .option('-s, --select', 'Select a file')
+            .action((fileName, options) => {
+                if (options.select) {
+                    const promps = [];
+                    promps.push({
+                        type: 'list',
+                        name: 'filePath',
+                        message: chalk.hex('#c0ca33')('Select a file'),
+                        choices: this.parse.dirWalk(process.cwd())
+                    });
+                    inquirer.prompt(promps).then(answers => {
+                        this.parse.getPath(answers.filePath, 'feedback', true);
+                    });
+                } else {
+                    this.parse.getPath(fileName, 'feedback', false);
+                }
             });
 
         program.parse(process.argv);
