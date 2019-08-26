@@ -37,9 +37,7 @@ class App {
                         this.parse.getPath(answers.filePath, 'dc', true);
                     });
                 } else {
-                    if (this.parse.isExcel(fileName)) {
-                        this.parse.getPath(fileName, 'dc', false);
-                    }
+                    this.parse.getPath(fileName, 'dc', false);
                 }
             });
 
