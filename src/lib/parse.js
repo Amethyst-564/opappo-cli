@@ -3,8 +3,18 @@ const path = require('path');
 const XLSX = require('xlsx');
 const _ = require('lodash');
 const chalk = require('chalk');
+const MsgUtil = require('../utils/msgUtil');
+
+const ERR_MSG_DIR = {
+    'ENOENT': 'ENOENT: no such file or directory',
+    'EISDIR': 'EISDIR: illegal operation on a directory'
+}
 
 class Parse {
+
+    constructor() {
+        this.msg = new MsgUtil();
+    }
 
     getPath(str, type, selectFlg) {
         let path = null;
@@ -35,17 +45,23 @@ class Parse {
 
     parseDc(filePath) {
         if (filePath) {
-            console.log(`parse dc: ${filePath}\n`);
-            // const workbook = XLSX.readFile(filePath);
-            // const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            // // calc number
-            // const totalNum = worksheet['B2'].v;
-            // const missNum = worksheet['C2'].v ? worksheet['C2'].v : 0;
-            // const adviceNum = worksheet['F2'].v ? worksheet['F2'].v : 0;
-            // const dcNum = missNum + adviceNum;
-            // console.log(`Total: ${totalNum}\nMiss Count: ${missNum}\nAdvice Count: ${adviceNum}\n=================\nDC Count: ${dcNum}\n\n${dcNum === 0 ? 'good!' : ''} `);
+            this.msg.info(`parse dc: ${filePath}`);
+            try {
+                const workbook = XLSX.readFile(filePath);
+                const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                // calc number
+                const totalNum = worksheet['B2'].v;
+                const missNum = worksheet['C2'].v ? worksheet['C2'].v : 0;
+                const adviceNum = worksheet['F2'].v ? worksheet['F2'].v : 0;
+                const dcNum = missNum + adviceNum;
+                this.msg.boxMsg(`Total: ${totalNum}\nMiss Count: ${missNum}\nAdvice Count: ${adviceNum}\n=================\nDC Count: ${dcNum}\n\n${dcNum === 0 ? 'good!' : ''} `);
 
-            this.getStaff(filePath);
+                this.getStaff(filePath);
+            } catch (err) {
+                this.msg.info(ERR_MSG_DIR[err.code] ? '' : err);
+                this.msg.info(ERR_MSG_DIR[err.code] ? ERR_MSG_DIR[err.code] : 'Unknown error');
+            }
+
         }
 
     }
