@@ -2,6 +2,12 @@ const chalk = require('chalk');
 const boxen = require('boxen');
 const emoji = require('node-emoji');
 
+const ERR_MSG_DIR = {
+    'ENOENT': 'ENOENT: no such file or directory',
+    'EISDIR': 'EISDIR: illegal operation on a directory',
+    'TypeError': 'Unsupported file type'
+}
+
 class MsgUtil {
 
     info(data, color = '#FFFFFF') {
@@ -13,7 +19,11 @@ class MsgUtil {
     }
 
     error(data, color = '#FFFFFF') {
-        if (data) console.error(`${chalk.hex('#f44336')('ERROR')} ${chalk.hex(color)(data)} !`);
+        if (data) console.error(`${chalk.hex('#f44336')('ERROR')} ${chalk.hex(color)(data)}`);
+    }
+
+    printErrByType(type) {
+        this.error(ERR_MSG_DIR[type] ? ERR_MSG_DIR[type] : 'Unknown error');
     }
 
     boxMsg(data, color = '#cddc39') {
