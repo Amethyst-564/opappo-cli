@@ -4,7 +4,7 @@
   "description": "opappo cli tools",
   "main": "index.js",
   "bin": {
-    "opappo": "./bin/app.js --debug"
+    "opappo": "./src/bin/app.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
