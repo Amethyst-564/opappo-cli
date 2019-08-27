@@ -5,11 +5,12 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 
 const Parse = require('../lib/parse');
+const MsgUtil = require('../utils/msgUtil');
 
 class App {
     constructor() {
-        this.fileList = [];
         this.parse = new Parse();
+        this.msg = new MsgUtil();
         this.initFunc();
     }
 
@@ -27,6 +28,11 @@ class App {
             .option('-s, --select', 'Select a file')
             .action((fileName, options) => {
                 if (options.select) {
+                    const fileList = this.parse.dirWalk(process.cwd());
+                    if (fileList.length === 0) {
+                        this.msg.info('There is no Excel file under the current path');
+                        process.exit();
+                    }
                     const promps = [];
                     promps.push({
                         type: 'list',

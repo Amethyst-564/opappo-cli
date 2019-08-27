@@ -77,22 +77,29 @@ class Parse {
      */
     dirWalk(dirPath, list) {
         const res = list ? list : [];
-        const files = fs.readdirSync(dirPath);
-        files.forEach((fileName) => {
-            const filePath = path.join(dirPath, fileName);
-            const stats = fs.statSync(filePath);
-            if (stats.isFile()) {
-                if (this.isExcel(fileName)) {
-                    res.push({
-                        name: chalk.hex('#f44336')(fileName),
-                        value: filePath
-                    });
+        try {
+            const files = fs.readdirSync(dirPath);
+            files.forEach((fileName) => {
+                const filePath = path.join(dirPath, fileName);
+                const stats = fs.statSync(filePath);
+                if (stats.isFile()) {
+                    if (this.isExcel(fileName)) {
+                        res.push({
+                            name: chalk.hex('#f44336')(fileName),
+                            value: filePath
+                        });
+                    }
                 }
+                if (stats.isDirectory()) {
+                    this.dirWalk(filePath, res);
+                }
+            });
+        } catch (err) {
+            if (_.startsWith(err, 'Error: ')) {
+                this.msg.printErrByType(_.split(err, ':')[1].trim());
             }
-            if (stats.isDirectory()) {
-                this.dirWalk(filePath, res);
-            }
-        });
+            this.msg.error(err);
+        }
 
         return res;
     }

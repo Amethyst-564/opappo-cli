@@ -5,7 +5,8 @@ const emoji = require('node-emoji');
 const ERR_MSG_DIR = {
     'ENOENT': 'ENOENT: no such file or directory',
     'EISDIR': 'EISDIR: illegal operation on a directory',
-    'TypeError': 'Unsupported file type'
+    'TypeError': 'TypeError: Unsupported file type',
+    'EPERM': 'EPERM: operation not permitted'
 }
 
 class MsgUtil {
@@ -20,6 +21,10 @@ class MsgUtil {
 
     error(data, color = '#FFFFFF') {
         if (data) console.error(`${chalk.hex('#f44336')('ERROR')} ${chalk.hex(color)(data)}`);
+    }
+
+    debug(data, color = '#FFFFFF') {
+        if (data) console.log(`${chalk.hex('#b39ddb')('DEBUG')} ${chalk.hex(color)(data)}`);
     }
 
     printErrByType(type) {
