@@ -41,7 +41,8 @@ class App {
                         choices: this.parse.dirWalk(process.cwd())
                     });
                     inquirer.prompt(promps).then(answers => {
-                        this.parse.getPath(answers.filePath, 'dc', true);
+                        // this.parse.getPath(answers.filePath, 'dc', true);
+                        this.parse.parseDc(answers.filePath);
                     });
                 } else {
                     this.parse.getPath(fileName, 'dc', false);
@@ -63,7 +64,8 @@ class App {
                         choices: this.parse.dirWalk(process.cwd())
                     });
                     inquirer.prompt(promps).then(answers => {
-                        this.parse.getPath(answers.filePath, 'feedback', true);
+                        // this.parse.getPath(answers.filePath, 'feedback', true);
+                        this.parse.parseFeedback(answers.filePath);
                     });
                 } else {
                     this.parse.getPath(fileName, 'feedback', false);
