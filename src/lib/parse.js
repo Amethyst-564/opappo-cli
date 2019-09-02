@@ -11,21 +11,16 @@ class Parse {
         this.msg = new MsgUtil();
     }
 
-    getPath(str, type, selectFlg) {
+    getPath(fileName, type) {
         let path = null;
 
-        if (str) {
-            if (selectFlg) {
-                // from select list
-                path = str;
-            } else {
-                // user input
-                if (!this.isExcel(str)) {
-                    this.msg.printErrByType('TypeError');
-                    process.exit(1);
-                }
-                path = `${process.cwd()}\\${str}`;
+        if (fileName) {
+            // check file ext
+            if (!this.isExcel(fileName)) {
+                this.msg.printErrByType('TypeError');
+                process.exit(1);
             }
+            path = `${process.cwd()}\\${fileName}`;
         } else {
             path = `${process.cwd()}`;
         }

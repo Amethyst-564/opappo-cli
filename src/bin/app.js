@@ -3,11 +3,11 @@
 const program = require('commander');
 const inquirer = require('inquirer');
 const chalk = require('chalk');
-
 const Parse = require('../lib/parse');
 const MsgUtil = require('../utils/msgUtil');
 
 class App {
+
     constructor() {
         this.parse = new Parse();
         this.msg = new MsgUtil();
@@ -41,11 +41,10 @@ class App {
                         choices: this.parse.dirWalk(process.cwd())
                     });
                     inquirer.prompt(promps).then(answers => {
-                        // this.parse.getPath(answers.filePath, 'dc', true);
                         this.parse.parseDc(answers.filePath);
                     });
                 } else {
-                    this.parse.getPath(fileName, 'dc', false);
+                    this.parse.getPath(fileName, 'dc');
                 }
             });
 
@@ -64,11 +63,10 @@ class App {
                         choices: this.parse.dirWalk(process.cwd())
                     });
                     inquirer.prompt(promps).then(answers => {
-                        // this.parse.getPath(answers.filePath, 'feedback', true);
                         this.parse.parseFeedback(answers.filePath);
                     });
                 } else {
-                    this.parse.getPath(fileName, 'feedback', false);
+                    this.parse.getPath(fileName, 'feedback');
                 }
             });
 
