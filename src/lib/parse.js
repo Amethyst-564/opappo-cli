@@ -11,10 +11,6 @@ class Parse {
     this.msg = new MsgUtil();
   }
 
-  test() {
-    console.log('!', this);
-  }
-
   /**
    * If there is no filename, the path is the current directory
    * @param {string} fileName from input
@@ -51,7 +47,6 @@ class Parse {
   }
 
   parseDc(filePath) {
-    console.log('!!!this: ', this);
     this.msg.info(`parse dc: ${filePath}`);
     try {
       const workbook = XLSX.readFile(filePath);
