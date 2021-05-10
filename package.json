@@ -21,7 +21,7 @@
     "commander": "^2.20.0",
     "get-cursor-position": "^1.0.5",
     "inquirer": "^6.5.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "node-emoji": "^1.10.0",
     "node-loading": "^1.0.2",
     "xlsx": "^0.15.1"
